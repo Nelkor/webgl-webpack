@@ -1,11 +1,4 @@
-# webpack-starter
-
-Проект можно использовать, как базу для создания новых приложений. Включает:
-* настроенный линтер
-* сборщик
-* dev-сервер
-* Sass/SCSS
-* перенос фавиконки
+# webpack-webgl-test
 
 ## Установить зависимости
 ```
@@ -21,30 +14,3 @@ npm run serve
 ```
 npm run build
 ```
-
-### Проанализировать код
-```
-npm run lint
-```
-
-## Dev-зависимости
-
-Вебпак
-* webpack
-* webpack-cli
-* webpack-dev-server
-* webpack-merge
-
-Плагины
-* clean-webpack-plugin
-* html-webpack-plugin
-* copy-webpack-plugin
-
-Линтер
-* eslint
-
-Стили
-* node-sass
-* sass-loader
-* css-loader
-* mini-css-extract-plugin

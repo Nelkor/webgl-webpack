@@ -3,10 +3,10 @@ import { program } from './program'
 import { getFigure } from './figure'
 import { countFrame } from '@test/fps-counter'
 
-gl.useProgram(program)
+const attribPos = program.getAttr('a_Position')
+const attribColor = program.getAttr('a_Color')
 
-const attribPos = gl.getAttribLocation(program, 'a_Position')
-const attribColor = gl.getAttribLocation(program, 'a_Color')
+program.use()
 
 export const draw = () => {
   countFrame()

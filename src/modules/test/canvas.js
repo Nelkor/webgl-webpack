@@ -8,7 +8,7 @@ if (!gl) {
   throw new Error('Can not get webgl context')
 }
 
-gl.clearColor(.9, .9, 1, 1)
+gl.clearColor(0, 0, 0, 0)
 
 const resize = () => {
   const [width, height] = [

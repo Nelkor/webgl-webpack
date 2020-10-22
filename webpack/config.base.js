@@ -39,6 +39,10 @@ module.exports = {
         test: /\.glsl$/,
         use: 'raw-loader',
       },
+      {
+        test: /\.jpg$/,
+        use: 'file-loader',
+      },
     ],
   },
   plugins: [

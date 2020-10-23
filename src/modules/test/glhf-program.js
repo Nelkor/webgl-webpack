@@ -47,7 +47,7 @@ export const createProgram = (vertexShaderText, fragmentShaderText) => {
   }
 
   const addAttr = createParsingReducer('getAttribLocation')
-  const addUf = createParsingReducer('getUniform')
+  const addUf = createParsingReducer('getUniformLocation')
 
   const attrs = parseVertexShader(vertexShaderText).reduce(addAttr, {})
   const uniforms = parseFragmentShader(fragmentShaderText).reduce(addUf, {})

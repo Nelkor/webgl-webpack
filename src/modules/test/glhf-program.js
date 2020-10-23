@@ -1,13 +1,16 @@
 import { gl } from '@test/canvas'
 
-const parseAttrib = attrib => {
-  const [type, name] = attrib.split(/\s+/i).slice(1)
+const getTypeAndName = str => {
+  const [type, name] = str.split(/\s+/i).slice(1)
 
   return { type, name }
 }
 
-const parseVertexShader = sourceText => sourceText
-  .match(/attribute ([^;]+)/g).map(parseAttrib)
+const createShaderParser = regex => text => (text.match(regex) || [])
+  .map(getTypeAndName)
+
+const parseVertexShader = createShaderParser(/attribute ([^;]+)/g)
+const parseFragmentShader = createShaderParser(/uniform ([^;]+)/g)
 
 const compileShader = shader => {
   gl.compileShader(shader)
@@ -37,16 +40,21 @@ export const createProgram = (vertexShaderText, fragmentShaderText) => {
     throw new Error(gl.getProgramInfoLog(program))
   }
 
-  const addAttr = (acc, cur) => {
-    acc[cur.name] = gl.getAttribLocation(program, cur.name)
+  const createParsingReducer = method => (acc, cur) => {
+    acc[cur.name] = gl[method](program, cur.name)
 
     return acc
   }
 
+  const addAttr = createParsingReducer('getAttribLocation')
+  const addUf = createParsingReducer('getUniform')
+
   const attrs = parseVertexShader(vertexShaderText).reduce(addAttr, {})
+  const uniforms = parseFragmentShader(fragmentShaderText).reduce(addUf, {})
 
   return {
     use: () => gl.useProgram(program),
     getAttr: name => attrs[name],
+    getUniform: name => uniforms[name],
   }
 }

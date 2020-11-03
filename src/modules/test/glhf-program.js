@@ -1,13 +1,24 @@
 import { gl } from './canvas'
 
-const getTypeAndName = str => {
-  const [type, name] = str.split(/\s+/i).slice(1)
+const getTypeAndNames = str => {
+  const [type, ...rem] = str.split(/\s+/i).slice(1)
 
-  return { type, name }
+  const names = rem
+    .filter(Boolean)
+    .map(name => name.endsWith(',') ? name.slice(0, -1) : name)
+
+  return { type, names }
+}
+
+const flatReducer = (acc, { type, names }) => {
+  acc.push(...names.map(name => ({ type, name })))
+
+  return acc
 }
 
 const createShaderParser = regex => text => (text.match(regex) || [])
-  .map(getTypeAndName)
+  .map(getTypeAndNames)
+  .reduce(flatReducer, [])
 
 const parseAttributes = createShaderParser(/attribute ([^;]+)/g)
 const parseUniforms = createShaderParser(/uniform ([^;]+)/g)
@@ -54,9 +65,20 @@ export const createProgram = (vertexShaderText, fragmentShaderText) => {
   const uniforms = parseUniforms(fragmentShaderText)
     .reduce(addUf, parseUniforms(vertexShaderText).reduce(addUf, {}))
 
+  const getAttr = name => attrs[name]
+  const getUniform = name => uniforms[name]
+
   return {
     use: () => gl.useProgram(program),
-    getAttr: name => attrs[name],
-    getUniform: name => uniforms[name],
+    getAttr,
+    getUniform,
+
+    // setAttribArrayMode: (name, on = true) => {
+    //   const method = on
+    //     ? 'enableVertexAttribArray'
+    //     : 'disableVertexAttribArray'
+    //
+    //   gl[method](getAttr(name))
+    // },
   }
 }
